@@ -28,6 +28,20 @@ class  FeatureExteraction:
         self.YD=YD
         self.f_s=f_s
     
+    def correlation_coefficient(self):
+        a=self.YP
+        b=self.YD
+        a_mean=np.mean(a, axis=-1, keepdims=True)
+        b_mean=np.mean(b, axis=-1, keepdims=True)
+        a_std=np.std(a,axis=-1, keepdims=True)
+        b_std=np.std(b,axis=-1, keepdims=True)
+        U=np.sum((a-a_mean)*(b-b_mean), axis=-1, keepdims=True)#(a_std*b_std)#np.dot(a,np.swapaxes(b,-2,-1))
+        D= np.sqrt( np.sum((a-a_mean)**2, axis=-1, keepdims=True)*np.sum((b-b_mean)**2, axis=-1, keepdims=True))
+        self.Corr=1-(U/D)
+        print("DimCorr={}".format(self.MA.shape))
+
+
+    
     def Maximum_Amplitude(self):
         MA_1=np.linalg.norm(self.YP-self.YD,axis=-1,keepdims=True)
         MA_2=np.linalg.norm(self.YP,axis=-1,keepdims=True)
@@ -82,7 +96,7 @@ class  FeatureExteraction:
         self.CWT, self.cwt_Freq=self.get_wavelet_transformation(self.YR[index,])
         print("Dim_CWT={}".format(self.CWT.shape))
         print("**we are taking the sum axis=0 and axis=-1 for Damage Index**")
-        self.sum_CWT=np.sum(np.sum(self.CWT, axis=0), axis=-1)
+        self.sum_CWT=np.sum(np.sum(self.CWT, axis=0), axis=-1,keepdims=True)
         print("Dim_Sum_DamageIndex_CWT={}".format(self.sum_CWT.shape))
 
     def get_wavelet_transformation(self,signal):
